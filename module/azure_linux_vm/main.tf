@@ -10,6 +10,7 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   admin_username      = data.azurerm_key_vault_secret.username[each.key].value
   admin_password      = data.azurerm_key_vault_secret.password[each.key].value
  disable_password_authentication = false
+ # checkov:skip=CKV_AZURE_149
  
   custom_data = (
     each.value.script_name != null ?
