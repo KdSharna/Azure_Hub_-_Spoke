@@ -22,7 +22,8 @@ variable "name_nic" {
     location    = string
     subnet_name = string
     vnet_name   = string
-    pip_name    = optional(string)
+    # pip_name    = optional(string)
+    ip_forward = optional(bool)
   }))
 }
 
@@ -87,17 +88,17 @@ variable "databasesql" {
   }))
 }
 
-# variable "login_bastion" {
-#   type = map(object({
-#     name        = string
-#     location    = string
-#     rg_name     = string
-#     subnet_name = string
-#     vnet_name   = string
-#     pip_name    = string
+variable "login_bastion" {
+  type = map(object({
+    name        = string
+    location    = string
+    rg_name     = string
+    subnet_name = string
+    vnet_name   = string
+    pip_name    = string
 
-#   }))
-# }
+  }))
+}
 
 variable "nsg_my" {
   type = map(object({
@@ -118,67 +119,150 @@ variable "nsg_my" {
   }))
 }
 
-# variable "nsg_subnet_map" {
+# variable "nsg_subnet_associate" {
 #   type = map(list(string))
 # }
-# tflint-ignore: terraform_unused_declarations
-variable "nsg_subnet_associate" {
-  type = map(list(string))
-}
 
-variable "lb_main" {
-  type = map(object({
-    name     = string
-    location = string
-    rg_name  = string
-    pip_name = string
-    frontend_ip_configuration = map(object({
-      name = string
-    }))
-  }))
-}
-
-variable "rules_lb" {
-  type = map(object({
-    name                           = string
-    protocol                       = string
-    frontend_port                  = number
-    backend_port                   = number
-    frontend_ip_configuration_name = string
-  }))
-}
-
-variable "probe_lb" {
-  type = map(object({
-    name = string
-    port = string
-  }))
-}
-
-variable "pool_back" {
-  type = map(object({
-    name = string
-  }))
-}
-
-variable "pool_nat" {
-  type = map(object({
-    name                           = string
-    protocol                       = string
-    frontend_port_start            = number
-    frontend_port_end              = number
-    backend_port                   = number
-    frontend_ip_configuration_name = string
-    rg_name                        = string
-  }))
-}
-
-# variable "firewall_lb" {
+# variable "lb_main" {
 #   type = map(object({
 #     name     = string
 #     location = string
 #     rg_name  = string
-#     sku_name = string
-#     sku_tier = string
+#     pip_name = string
+#     frontend_ip_configuration = map(object({
+#       name = string
+#     }))
 #   }))
 # }
+
+# variable "rules_lb" {
+#   type = map(object({
+#     name                           = string
+#     protocol                       = string
+#     frontend_port                  = number
+#     backend_port                   = number
+#     frontend_ip_configuration_name = string
+#   }))
+# }
+
+# variable "probe_lb" {
+#   type = map(object({
+#     name = string
+#     port = string
+#   }))
+# }
+
+# variable "pool_back" {
+#   type = map(object({
+#     name = string
+#   }))
+# }
+
+# variable "pool_nat" {
+#   type = map(object({
+#     name                           = string
+#     protocol                       = string
+#     frontend_port_start            = number
+#     frontend_port_end              = number
+#     backend_port                   = number
+#     frontend_ip_configuration_name = string
+#     rg_name                        = string
+#   }))
+# }
+
+variable "firewall_lb" {
+  type = map(object({
+    name     = string
+    location = string
+    rg_name  = string
+    sku_name = string
+    sku_tier = string
+    # subnet_id = string
+    pip_name    = string
+    subnet_name = string
+    vnet_name   = string
+  }))
+}
+
+# variable "vault_keys" {
+#   type = map(object({
+#     name                = string
+#     location            = string
+#     resource_group_name = string
+#     sku_name            = string
+#   }))
+# }
+
+variable "gw_nat" {
+  type = map(object({
+    name                    = string
+    location                = string
+    resource_group_name     = string
+    sku_name                = string
+    idle_timeout_in_minutes = number
+    zones                   = list(string)
+  }))
+}
+
+variable "peering_vnet" {
+  type = map(object({
+    name                      = string
+    resource_group_name       = string
+    virtual_network_name      = string
+    remote_virtual_network_id = string
+    allow_gateway_transit     = bool
+    use_remote_gateways       = bool
+  }))
+}
+
+variable "vpn_hub" {
+  type = map(object({
+    name          = string
+    location      = string
+    type          = string
+    vpn_type      = string
+    active_active = bool
+    enable_bgp    = bool
+    sku           = string
+    subnet_name   = string
+    vnet_name     = string
+    pip_name      = string
+    rg_name       = string
+  }))
+}
+
+variable "rt_spoke" {
+  type = map(object({
+    name                = string
+    location            = string
+    resource_group_name = string
+  }))
+}
+
+variable "r_spoke" {
+  type = map(object({
+    name                   = string
+    resource_group_name    = string
+    route_table_name       = string
+    address_prefix         = string
+    next_hop_type          = string
+    next_hop_in_ip_address = string
+  }))
+}
+
+# variable "assoc_subnet_rt" {
+#   type = map(object({
+#     subnet_id      = string
+#     route_table_id = string
+#   }))
+# }
+
+variable "lan_hub_gw" {
+  type = map(object({
+    name          = string
+    location      = string
+    address_space = list(string)
+    pip_name      = string
+    rg_name       = string
+  }))
+}
